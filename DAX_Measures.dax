@@ -1,0 +1,72 @@
+// ===================================================================
+// Banking & Loan Risk Analytics Dashboard - DAX Measures & Calculations
+// ===================================================================
+
+// --- Core KPI Measures ---
+
+Total Loan Amount = 
+SUM(credit_risk[Amount])
+
+Total Applications = 
+COUNTROWS(credit_risk)
+
+Defaulted Loans = 
+CALCULATE(
+    COUNTROWS(credit_risk),
+    credit_risk[Status] = 1
+)
+
+Non-Defaulted Loans = 
+CALCULATE(
+    COUNTROWS(credit_risk),
+    credit_risk[Status] = 0
+)
+
+Default Rate = 
+DIVIDE(
+    [Defaulted Loans],
+    [Total Applications],
+    0
+)
+
+Average Interest Rate = 
+AVERAGE(credit_risk[Rate])
+
+Average Loan Amount = 
+AVERAGE(credit_risk[Amount])
+
+Average Borrower Income = 
+AVERAGE(credit_risk[Income])
+
+// --- Calculated Columns ---
+
+// Age Group Classification
+Age Group = 
+SWITCH(
+    TRUE(),
+    credit_risk[Age] < 25, "Under 25",
+    credit_risk[Age] >= 25 && credit_risk[Age] <= 34, "25-34",
+    credit_risk[Age] >= 35 && credit_risk[Age] <= 44, "35-44",
+    credit_risk[Age] >= 45 && credit_risk[Age] <= 54, "45-54",
+    credit_risk[Age] >= 55, "55 and above",
+    "Unknown"
+)
+
+// Loan Status Label
+Loan Status Label = 
+IF(
+    credit_risk[Status] = 1,
+    "Default",
+    "Non-Default"
+)
+
+// Income Percent Category
+Income Category = 
+SWITCH(
+    TRUE(),
+    credit_risk[Income] < 30000, "Low (<$30K)",
+    credit_risk[Income] >= 30000 && credit_risk[Income] < 70000, "Medium ($30K-$70K)",
+    credit_risk[Income] >= 70000 && credit_risk[Income] < 120000, "High ($70K-$120K)",
+    credit_risk[Income] >= 120000, "Very High (>$120K)",
+    "Unknown"
+)

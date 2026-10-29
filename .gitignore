@@ -1,0 +1,8 @@
+# Temp files and backups
+*.tmp
+~$*
+.DS_Store
+Thumbs.db
+
+# Power BI auto-recovery
+*.abf
